@@ -1,16 +1,129 @@
 ---
-
+// src/pages/index.astro
 ---
 
+<!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chris Price</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fff;
+            color: #101010;
+            line-height: 1.6;
+        }
+        
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            padding: 20px 40px;
+            z-index: 100;
+        }
+        
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 600;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #666;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #000;
+        }
+        
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 140px 40px 80px;
+        }
+        
+        h1 {
+            font-size: 60px;
+            font-weight: 500;
+            line-height: 1.2;
+            margin-bottom: 40px;
+            letter-spacing: -0.02em;
+        }
+        
+        .content p {
+            font-size: 18px;
+            line-height: 1.8;
+            margin-bottom: 24px;
+            color: #333;
+        }
+        
+        .content p strong {
+            font-weight: 600;
+            color: #000;
+        }
+        
+        footer {
+            border-top: 1px solid rgba(0,0,0,0.1);
+            padding: 40px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-inner">
+            <a href="/" class="logo">Chris Price</a>
+            <ul class="nav-links">
+                <li><a href="/about">About</a></li>
+                <li><a href="/projects">Projects</a></li>
+                <li><a href="/blog">Blog</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <main>
+        <h1>Your headline here.</h1>
+        <div class="content">
+            <p>Your first paragraph.</p>
+            <p>Your second paragraph.</p>
+            <p><strong>Your bold statement.</strong></p>
+            <p>Your final paragraph.</p>
+        </div>
+    </main>
+    
+    <footer>
+        © 2025 Chris Price
+    </footer>
+</body>
 </html>
