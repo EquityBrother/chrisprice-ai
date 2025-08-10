@@ -9,7 +9,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio - Chris Price</title>
     <style>
-        /* Same styles as index.astro */
         * {
             margin: 0;
             padding: 0;
@@ -80,11 +79,27 @@
             letter-spacing: -0.02em;
         }
         
-        .content p {
+        .content ul {
             font-size: 18px;
             line-height: 1.8;
-            margin-bottom: 24px;
             color: #333;
+            list-style: disc;
+            padding-left: 24px;
+        }
+        
+        .content ul li {
+            margin-bottom: 16px;
+        }
+        
+        .content ul a {
+            color: #000;
+            text-decoration: none;
+            border-bottom: 1px solid #ccc;
+            transition: border-color 0.3s;
+        }
+        
+        .content ul a:hover {
+            border-bottom-color: #000;
         }
         
         footer {
@@ -112,7 +127,11 @@
     <main>
         <h1>Portfolio</h1>
         <div class="content">
-            <p>Your portfolio content here.</p>
+            <ul>
+                <li><a href="https://casco.com/" target="_blank">Casco</a></li>
+                <li><a href="https://agentmail.to/" target="_blank">AgentMail</a></li>
+                <li><a href="https://getasap.asia/" target="_blank">ASAP Asia</a></li>
+            </ul>
         </div>
     </main>
     
