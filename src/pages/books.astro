@@ -1,5 +1,5 @@
 ---
-// src/pages/index.astro
+// src/pages/books.astro
 ---
 
 <!DOCTYPE html>
@@ -7,8 +7,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chris Price</title>
+    <title>Portfolio - Chris Price</title>
     <style>
+        /* Same styles as index.astro */
         * {
             margin: 0;
             padding: 0;
@@ -86,11 +87,6 @@
             color: #333;
         }
         
-        .content p strong {
-            font-weight: 600;
-            color: #000;
-        }
-        
         footer {
             border-top: 1px solid rgba(0,0,0,0.1);
             padding: 40px;
@@ -105,8 +101,8 @@
         <div class="nav-inner">
             <a href="/" class="logo">Chris Price</a>
             <ul class="nav-links">
-                <li><a href="/" class="active">Home</a></li>
-                <li><a href="/portfolio">Portfolio</a></li>
+                <li><a href="/">Home</a></li>
+                <li><a href="/portfolio" class="active">Portfolio</a></li>
                 <li><a href="/books">Books</a></li>
                 <li><a href="/quotes">Quotes</a></li>
             </ul>
@@ -114,12 +110,9 @@
     </nav>
     
     <main>
-        <h1>Your headline here.</h1>
+        <h1>Portfolio</h1>
         <div class="content">
-            <p>Your first paragraph.</p>
-            <p>Your second paragraph.</p>
-            <p><strong>Your bold statement.</strong></p>
-            <p>Your final paragraph.</p>
+            <p>Your portfolio content here.</p>
         </div>
     </main>
     
