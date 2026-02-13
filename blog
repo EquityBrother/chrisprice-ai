@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# blog — quick-publish a Saturday Thought
+# Usage: ./blog
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PAGE="$SCRIPT_DIR/src/pages/saturday-thoughts.astro"
+
+# 1. Open editor
+TMPFILE=$(mktemp /tmp/thought.XXXXXX)
+trap 'rm -f "$TMPFILE"' EXIT
+
+${EDITOR:-vim} "$TMPFILE"
+
+# 2. Abort if empty
+if [ ! -s "$TMPFILE" ]; then
+    echo "Empty file — nothing to publish."
+    exit 0
+fi
+
+# 3. Read content and format date
+CONTENT=$(cat "$TMPFILE")
+TODAY=$(date +"%B %-d, %Y")
+
+# 4. Build the new post block
+NEW_POST=$(cat <<ENDOFPOST
+
+        <div class="post">
+            <div class="post-date">$TODAY</div>
+            <div class="post-content">$CONTENT</div>
+        </div>
+ENDOFPOST
+)
+
+# 5. Inject after the <h1> tag (newest on top)
+# Use a temp file for sed since macOS sed -i requires backup extension
+SEDTMP=$(mktemp /tmp/sed.XXXXXX)
+trap 'rm -f "$TMPFILE" "$SEDTMP"' EXIT
+
+awk -v post="$NEW_POST" '
+    /<h1>Saturday Thoughts<\/h1>/ {
+        print
+        print post
+        next
+    }
+    { print }
+' "$PAGE" > "$SEDTMP" && mv "$SEDTMP" "$PAGE"
+
+# 6. Commit and push
+cd "$SCRIPT_DIR"
+git add src/pages/saturday-thoughts.astro
+git commit -m "saturday thought"
+git push origin main
+
+# 7. Done
+echo ""
+echo "Published: \"$(echo "$CONTENT" | head -c 60)...\""
+echo "Live shortly at chrisprice.ai/saturday-thoughts"
