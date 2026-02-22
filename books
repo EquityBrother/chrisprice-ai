@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# books — quick-add a book to the books page
+# Usage: ./books
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PAGE="$SCRIPT_DIR/src/pages/books.astro"
+
+# 1. Collect book info
+echo ""
+read -p "Title: " TITLE
+read -p "Author: " AUTHOR
+read -p "Year published: " YEAR
+
+if [ -z "$TITLE" ] || [ -z "$AUTHOR" ] || [ -z "$YEAR" ]; then
+    echo "Missing info — nothing to publish."
+    exit 0
+fi
+
+# 2. Open editor for snippet
+TMPFILE=$(mktemp /tmp/book-snippet.XXXXXX)
+trap 'rm -f "$TMPFILE"' EXIT
+
+echo ""
+echo "Write your snippet (opening vim)..."
+${EDITOR:-vim} "$TMPFILE"
+
+# 3. Abort if empty
+if [ ! -s "$TMPFILE" ]; then
+    echo "Empty snippet — nothing to publish."
+    exit 0
+fi
+
+SNIPPET=$(cat "$TMPFILE")
+
+# 4. Build the new book entry
+NEW_BOOK=$(cat <<ENDOFBOOK
+    <li>
+        <strong>$TITLE ($YEAR)</strong> - $AUTHOR<br>
+        $SNIPPET
+    </li>
+ENDOFBOOK
+)
+
+# 5. Inject after the <ul> tag (newest on top)
+BOOKFILE=$(mktemp /tmp/book-entry.XXXXXX)
+SEDTMP=$(mktemp /tmp/sed-book.XXXXXX)
+trap 'rm -f "$TMPFILE" "$BOOKFILE" "$SEDTMP"' EXIT
+
+printf '%s\n' "$NEW_BOOK" > "$BOOKFILE"
+sed "/<ul>/r $BOOKFILE" "$PAGE" > "$SEDTMP" && mv "$SEDTMP" "$PAGE"
+
+# 6. Commit and push
+cd "$SCRIPT_DIR"
+git add src/pages/books.astro
+git commit -m "new book: $TITLE"
+git push origin main
+
+# 7. Deploy to Vercel production
+echo ""
+echo "Deploying to chrisprice.ai..."
+vercel --prod --yes
+
+# 8. Done
+echo ""
+echo "Added: \"$TITLE\" by $AUTHOR ($YEAR)"
+echo "Live now at chrisprice.ai/books"
