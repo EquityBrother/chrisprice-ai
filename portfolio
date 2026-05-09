@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# portfolio — quick-add a portfolio company
+# Usage: ./portfolio
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PAGE="$SCRIPT_DIR/src/pages/portfolio.astro"
+
+# 1. Prompt for company name
+read -rp "Company name: " COMPANY
+if [ -z "$COMPANY" ]; then
+    echo "No company name — nothing to publish."
+    exit 0
+fi
+
+# 2. Prompt for URL
+read -rp "URL: " URL
+if [ -z "$URL" ]; then
+    echo "No URL — nothing to publish."
+    exit 0
+fi
+
+# 3. Build the new list item
+NEW_ITEM="                <li><a href=\"$URL\" target=\"_blank\">$COMPANY</a></li>"
+
+# 4. Inject before the closing </ul> tag
+SEDTMP=$(mktemp /tmp/sed.XXXXXX)
+trap 'rm -f "$SEDTMP"' EXIT
+
+awk -v item="$NEW_ITEM" '
+    /class="content"/ { in_content = 1 }
+    in_content && /<\/ul>/ {
+        print item
+        in_content = 0
+    }
+    { print }
+' "$PAGE" > "$SEDTMP" && mv "$SEDTMP" "$PAGE"
+
+# 5. Commit and push
+cd "$SCRIPT_DIR"
+git add src/pages/portfolio.astro
+git commit -m "new portfolio company: $COMPANY"
+git push origin main
+
+# 6. Deploy to Vercel production
+echo ""
+echo "Deploying to chrisprice.ai..."
+vercel --prod --yes
+
+# 7. Done
+echo ""
+echo "Added: $COMPANY ($URL)"
+echo "Live now at chrisprice.ai/portfolio"

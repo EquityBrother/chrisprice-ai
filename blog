@@ -34,18 +34,12 @@ ENDOFPOST
 )
 
 # 5. Inject after the <h1> tag (newest on top)
-# Use a temp file for sed since macOS sed -i requires backup extension
+POSTFILE=$(mktemp /tmp/post.XXXXXX)
 SEDTMP=$(mktemp /tmp/sed.XXXXXX)
-trap 'rm -f "$TMPFILE" "$SEDTMP"' EXIT
+trap 'rm -f "$TMPFILE" "$POSTFILE" "$SEDTMP"' EXIT
 
-awk -v post="$NEW_POST" '
-    /<h1>Saturday Thoughts<\/h1>/ {
-        print
-        print post
-        next
-    }
-    { print }
-' "$PAGE" > "$SEDTMP" && mv "$SEDTMP" "$PAGE"
+printf '%s\n' "$NEW_POST" > "$POSTFILE"
+sed "/<h1>Saturday Thoughts<\/h1>/r $POSTFILE" "$PAGE" > "$SEDTMP" && mv "$SEDTMP" "$PAGE"
 
 # 6. Commit and push
 cd "$SCRIPT_DIR"
